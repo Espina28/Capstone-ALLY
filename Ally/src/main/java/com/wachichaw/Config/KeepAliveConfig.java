@@ -9,7 +9,7 @@ import java.net.URL;
 @Configuration
 public class KeepAliveConfig {
 
-    private static final String HEALTH_URL = "https://capstone-ally.onrender.com/actuator/health";
+    private static final String HEALTH_URL = "https://capstone-ally-d67e.onrender.com/actuator/health";
 
     @Scheduled(fixedRate = 4 * 60 * 1000) // every 4 minutes
     public void pingSelf() {
