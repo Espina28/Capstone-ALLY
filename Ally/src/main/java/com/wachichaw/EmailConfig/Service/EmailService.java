@@ -1,32 +1,29 @@
 package com.wachichaw.EmailConfig.Service;
 
-// Import classes from the MailerSend SDK
 import com.mailersend.sdk.MailerSend;
 import com.mailersend.sdk.emails.Email;
 import com.mailersend.sdk.exceptions.MailerSendException;
-// Import Spring classes for component and value injection
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-// Remove imports for JavaMailSender, MimeMessageHelper, MimeMessage, and MessagingException
+// The previous jakarta.mail imports are no longer needed, assuming you removed spring-boot-starter-mail
 
 @Service
 public class EmailService {
 
-    // 1. INJECT API KEY: Inject the API key from your Render environment variable
-    //    The key in Render MUST be set to MAILERSEND_API_KEY
+    // Inject the API Key from Render environment variables
+    // The key in Render MUST be set to MAILERSEND_API_KEY
     @Value("${MAILERSEND_API_KEY}") 
     private String apiToken;
 
-    // 2. DEFINE SENDER: Hardcode the trial domain sender provided by MailerSend
+    // Define the sender details (using your trial domain)
     private final String FROM_EMAIL = "MS_wvNJ9M@test-2p0347zv7d3lzdrn.mlsender.net"; 
     private final String FROM_NAME = "Ally Team";
 
-
-    // The mailSender (JavaMailSender) is no longer needed:
+    // The old JavaMailSender is no longer used:
     // @Autowired
-    // private JavaMailSender mailSender;
+    // private JavaMailSender mailSender; 
 
 
     public void sendEmail(String to, String subject, String body) {
@@ -34,11 +31,16 @@ public class EmailService {
             throw new IllegalArgumentException("Email to, subject, and body must not be empty");
         }
 
-        // 3. INITIALIZE MAILERSEND CLIENT
-        // This object handles the connection over HTTPS (Port 443)
-        MailerSend mailersend = new MailerSend(apiToken);
+        // --- FIX IS HERE ---
+        // 1. Initialize MailerSend client *without* arguments.
+        MailerSend mailersend = new MailerSend(); 
         
-        // 4. BUILD EMAIL USING MAILERSEND SDK OBJECTS
+        // 2. Set the API token using the setter method.
+        mailersend.setToken(apiToken);
+        // --- END FIX ---
+
+
+        // Build the email object
         Email email = new Email();
         
         try {
@@ -50,9 +52,9 @@ public class EmailService {
             
             // Set subject and content
             email.setSubject(subject);
-            email.setHtml(body); // Use setHtml() since your body is HTML
+            email.setHtml(body); 
             
-            // 5. SEND THE EMAIL VIA API CALL
+            // Send the email via API call
             mailersend.emails().send(email);
 
             System.out.println("Email sent successfully via MailerSend API to: " + to);
@@ -63,7 +65,6 @@ public class EmailService {
             e.printStackTrace();
             throw new RuntimeException("Failed to send email to " + to, e);
         }
-        // Removed try/catch block for jakarta.mail.MessagingException
     }
 
     public void sendAppointmentReminder(String to, String userName, java.time.LocalDateTime appointmentTime, String userType) {
