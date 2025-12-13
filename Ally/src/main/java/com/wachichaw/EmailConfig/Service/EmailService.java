@@ -34,7 +34,7 @@ public class EmailService {
 
             
             // You might want to set a from address
-            helper.setFrom("allylegal.cit@gmail.com"); // or another valid email
+            helper.setFrom("MS_wvNJ9M@test-2p0347zv7d3lzdrn.mlsender.net"); // or another valid email
 
             mailSender.send(message);
             System.out.println("Email sent successfully to: " + to);
