@@ -18,7 +18,7 @@ public class EmailService {
     private String apiToken;
 
     // Define the sender details (using your trial domain)
-    private final String FROM_EMAIL = "MS_wvNJ9M@test-2p0347zv7d3lzdrn.mlsender.net"; 
+    private final String FROM_EMAIL = "ally@test-2p0347zv7d3lzdrn.mlsender.net"; 
     private final String FROM_NAME = "Ally Team";
 
     // The old JavaMailSender is no longer used:
