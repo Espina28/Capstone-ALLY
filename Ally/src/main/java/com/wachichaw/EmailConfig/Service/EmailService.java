@@ -20,7 +20,6 @@ public class EmailService {
     // Define the sender details (using your trial domain)
     private final String FROM_EMAIL = "ally@test-2p0347zv7d3lzdrn.mlsender.net"; 
     private final String FROM_NAME = "Ally Team";
-    System.out.println(apiToken);
 
     // The old JavaMailSender is no longer used:
     // @Autowired
@@ -31,6 +30,10 @@ public class EmailService {
         if (!StringUtils.hasText(to) || !StringUtils.hasText(subject) || !StringUtils.hasText(body)) {
             throw new IllegalArgumentException("Email to, subject, and body must not be empty");
         }
+
+        // 🚨 DEBUG CODE ADDED HERE 🚨
+        System.out.println("DEBUG: Loaded API Token (First 8 characters): " + (apiToken != null ? apiToken.substring(0, Math.min(apiToken.length(), 8)) + "..." : "NULL/Empty"));
+        // 🚨 REMOVE THIS LINE AFTER TESTING! 🚨
 
         // --- FIX IS HERE ---
         // 1. Initialize MailerSend client *without* arguments.
