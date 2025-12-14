@@ -49,7 +49,7 @@ public class EmailService {
         
         try {
             // Set sender details
-            email.setFrom(FROM_EMAIL, FROM_NAME); 
+            email.setFrom("Sender Name", "allycitu@gmail.com"); 
             
             // Add the recipient. MailerSend API uses the recipient email/name pattern
             email.addRecipient(to, ""); 
