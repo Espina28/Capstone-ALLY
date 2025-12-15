@@ -185,7 +185,13 @@ export default function ClientRegistrationForm() {
         });
 
         if (response.ok) {
-          navigate('/signup/verifyClient', { state: { email: formData.email } });
+          const data = await response.json();
+          if (data.verified) {
+            toast.success("Registration successful! Please login.");
+            navigate('/login');
+          } else {
+            navigate('/signup/verifyClient', { state: { email: formData.email } });
+          }
         } else {
           // Try to get error message from backend
           const errorData = await response.json().catch(() => ({}));

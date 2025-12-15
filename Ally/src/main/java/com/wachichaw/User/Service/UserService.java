@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.wachichaw.Admin.Entity.AdminEntity;
+import com.wachichaw.Admin.Service.SystemSettingsService;
 import com.wachichaw.Client.Entity.ClientEntity;
 import com.wachichaw.Client.Entity.TempClient;
 import com.wachichaw.Config.JwtUtil;
@@ -44,6 +45,8 @@ public class UserService {
     private TempLawyer tempLawyerStorageService;
     @Autowired
     private VerificationService verificationService;
+    @Autowired
+    private SystemSettingsService systemSettingsService;
     
      
 
@@ -101,7 +104,12 @@ public class UserService {
         client.setProvince(province);
         client.setZip(zip);
         client.setProfilePhotoUrl(profilePhoto);
-        client.setAccountType(AccountType.CLIENT);  
+        client.setAccountType(AccountType.CLIENT);
+            if (!systemSettingsService.getSettings().isEnableEmailVerification()) {
+                client.setVerified(true);
+                client.setPassword(passwordEncoder.encode(pass));
+                return userRepo.save(client);
+            }
         int token = (int)(Math.random() * 900000) + 100000;
         tempClientStorageService.saveUnverifiedUser(token, client);
         tempClientStorageService.getUnverifiedUser(token);
@@ -172,6 +180,11 @@ public class UserService {
         lawyer.setEducationInstitution(educationInstitution);
         lawyer.setProfilePhotoUrl(profilePhoto);
         lawyer.setAccountType(AccountType.LAWYER);
+            if (!systemSettingsService.getSettings().isEnableEmailVerification()) {
+                lawyer.setVerified(true);
+                lawyer.setPassword(passwordEncoder.encode(pass));
+                return userRepo.save(lawyer);
+            }
         int token = (int)(Math.random() * 900000) + 100000;
         tempLawyerStorageService.saveUnverifiedUser(token, lawyer);
         tempLawyerStorageService.getUnverifiedUser(token);

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Mail, Bell, Key, Database, Clock, Globe, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
 const SettingsDashboard = () => {
   const [activeTab, setActiveTab] = useState('security');
@@ -18,6 +19,55 @@ const SettingsDashboard = () => {
   });
 
   const [systemSettings, setSystemSettings] = useState({
+    enableEmailVerification: true,
+    enableAppointmentReminders: false
+  });
+
+  useEffect(() => {
+    fetchSystemSettings();
+  }, []);
+
+  const fetchSystemSettings = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/settings/system`);
+      if (response.ok) {
+        const data = await response.json();
+        setSystemSettings(data);
+      } else {
+        toast.error('Failed to fetch system settings.');
+      }
+    } catch (error) {
+      toast.error('An error occurred while fetching settings.');
+    }
+  };
+
+  const handleSystemSettingChange = async (settingName, value) => {
+    const updatedSettings = { ...systemSettings, [settingName]: value };
+    setSystemSettings(updatedSettings);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/settings/system`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedSettings),
+      });
+
+      if (response.ok) {
+        toast.success('Settings updated successfully!');
+      } else {
+        toast.error('Failed to update settings.');
+        // Revert UI change on failure
+        setSystemSettings(prev => ({...prev, [settingName]: !value}));
+      }
+    } catch (error) {
+      toast.error('An error occurred while updating settings.');
+      setSystemSettings(prev => ({...prev, [settingName]: !value}));
+    }
+  };
+
+  const [oldSystemSettings, setOldSystemSettings] = useState({
     language: "en",
     timezone: "UTC+8",
     dateFormat: "MM/DD/YYYY"
@@ -83,7 +133,7 @@ const SettingsDashboard = () => {
                   <h4 className="font-medium">Session Timeout</h4>
                   <p className="text-sm text-gray-500">Automatically log out after inactivity</p>
                 </div>
-                <select 
+                <select
                   value={securitySettings.sessionTimeout}
                   onChange={(e) => setSecuritySettings(prev => ({
                     ...prev,
@@ -96,6 +146,38 @@ const SettingsDashboard = () => {
                   <option value="60">1 hour</option>
                   <option value="120">2 hours</option>
                 </select>
+              </div>
+                 <div className="border-t my-6"></div>
+              <h3 className="text-lg font-medium">System Controls</h3>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Enable Email Verification</h4>
+                  <p className="text-sm text-gray-500">Require users to verify their email upon signup.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={systemSettings.enableEmailVerification}
+                    onChange={(e) => handleSystemSettingChange('enableEmailVerification', e.target.checked)}
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Enable Appointment Reminders</h4>
+                  <p className="text-sm text-gray-500">Send email reminders for upcoming appointments.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={systemSettings.enableAppointmentReminders}
+                    onChange={(e) => handleSystemSettingChange('enableAppointmentReminders', e.target.checked)}
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
               </div>
             </div>
           </div>
@@ -142,9 +224,9 @@ const SettingsDashboard = () => {
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Language</label>
-                  <select 
-                    value={systemSettings.language}
-                    onChange={(e) => setSystemSettings(prev => ({
+                  <select
+                    value={oldSystemSettings.language}
+                    onChange={(e) => setOldSystemSettings(prev => ({
                       ...prev,
                       language: e.target.value
                     }))}
@@ -158,9 +240,9 @@ const SettingsDashboard = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Timezone</label>
-                  <select 
-                    value={systemSettings.timezone}
-                    onChange={(e) => setSystemSettings(prev => ({
+                  <select
+                    value={oldSystemSettings.timezone}
+                    onChange={(e) => setOldSystemSettings(prev => ({
                       ...prev,
                       timezone: e.target.value
                     }))}
@@ -175,9 +257,9 @@ const SettingsDashboard = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Date Format</label>
-                  <select 
-                    value={systemSettings.dateFormat}
-                    onChange={(e) => setSystemSettings(prev => ({
+                  <select
+                    value={oldSystemSettings.dateFormat}
+                    onChange={(e) => setOldSystemSettings(prev => ({
                       ...prev,
                       dateFormat: e.target.value
                     }))}
