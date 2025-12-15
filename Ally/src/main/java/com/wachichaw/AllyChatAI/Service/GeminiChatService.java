@@ -77,6 +77,8 @@ public class GeminiChatService {
             genConfig.put("topK", 40);
             requestBody.set("generationConfig", genConfig);
 
+            this.googleCredentials.refreshIfExpired();
+
             // 3. Prepare Auth Headers
             String token = googleCredentials.getAccessToken().getTokenValue();
             HttpHeaders headers = new HttpHeaders();
