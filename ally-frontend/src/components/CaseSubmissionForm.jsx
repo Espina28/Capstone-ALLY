@@ -18,6 +18,15 @@ const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
   const [caseType, setCaseType] = useState('');
   const [availableCaseTypes, setAvailableCaseTypes] = useState([]);
   const [filteredLawyers, setFilteredLawyers] = useState([]);
+
+  // Disable body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
 
@@ -179,8 +188,9 @@ const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="flex items-center justify-center min-h-screen px-4 py-8">
+        <div className="relative mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold text-gray-900">
@@ -329,7 +339,7 @@ const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex justify-end space-x-3 pt-4 pb-4">
             <button
               type="button"
               onClick={onClose}
@@ -357,6 +367,7 @@ const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

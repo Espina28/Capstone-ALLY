@@ -59,20 +59,30 @@ export const LawyerProfile = ({ lawyer, onClose }) => {
         );
     }
 
+    // Disable body scroll when modal is open
+    useEffect(() => {
+        if (lawyer) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [lawyer]);
+
     return (
         <>
             <div className="fixed inset-0 z-50 overflow-y-auto">
-                <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                    <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose}></div>
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center sm:p-0">
+                    <div className="fixed inset-0 transition-opacity bg-black bg-opacity-60 backdrop-blur-sm" onClick={onClose}></div>
 
-                    <div className="relative inline-block overflow-hidden text-left align-bottom transition-all transform bg-white shadow-xl rounded-xl sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-                        <div className="absolute right-4 top-4">
-                            <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <div className="relative inline-block overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl sm:max-w-4xl sm:w-full max-h-[90vh] flex flex-col">
+                        <div className="absolute right-4 top-4 z-10">
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-500 bg-white rounded-full p-1">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                    <div className="p-8">
+                    <div className="p-8 overflow-y-auto flex-1">
                         <div className="flex items-start mb-6 space-x-4">
                             <div className="flex items-center justify-center w-20 h-20 text-2xl font-semibold text-white bg-blue-500 rounded-full">
                                 {lawyer?.image ? (

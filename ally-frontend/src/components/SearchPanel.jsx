@@ -173,7 +173,7 @@ export const SearchPanel = ({
       </div>
 
       {/* Lawyers list */}
-      <div className="space-y-4">
+      <div>
         {lawyers.length === 0 ? (
           <div className="py-8 text-center">
             <p className="text-gray-600">No lawyers found matching your criteria.</p>
@@ -185,13 +185,15 @@ export const SearchPanel = ({
             </button>
           </div>
         ) : (
-          lawyers.map((lawyer) => (
-            <LawyerCard
-              key={lawyer.id}
-              lawyer={lawyer}
-              onClick={onLawyerSelect}
-            />
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {lawyers.map((lawyer) => (
+              <LawyerCard
+                key={lawyer.id}
+                lawyer={lawyer}
+                onClick={onLawyerSelect}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

@@ -173,6 +173,7 @@ const ChatModal = ({
               currentUserRole={currentUserRole}
               currentUserName={currentUserName}
               receiverName={displayReceiverName}
+              compact={true}
             />
           )}
         </div>
