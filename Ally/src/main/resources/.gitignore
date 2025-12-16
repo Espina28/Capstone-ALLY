@@ -5,3 +5,4 @@ ally-firebasesdk.json
 service-account-key.json
 ally-firebase-service-account.json
 .env
+dev.application.properties
