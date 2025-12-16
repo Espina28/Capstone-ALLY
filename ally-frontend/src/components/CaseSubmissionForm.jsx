@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X, Send, AlertCircle, Loader2 } from 'lucide-react';
 import { caseService } from '../services/caseService.jsx';
 import { getAuthData } from '../utils/auth.jsx';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/modalScrollLock';
 
 const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ const CaseSubmissionForm = ({ onClose, onSuccess, selectedLawyer }) => {
   const [availableCaseTypes, setAvailableCaseTypes] = useState([]);
   const [filteredLawyers, setFilteredLawyers] = useState([]);
 
-  // Disable body scroll when modal is open
+  // Disable body scroll when modal is open (using counter for nested modals)
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    lockBodyScroll();
     return () => {
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
     };
   }, []);
 

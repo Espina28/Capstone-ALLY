@@ -1,4 +1,4 @@
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, CheckCircle2, Clock } from 'lucide-react';
 
 export const LawyerCard = ({ lawyer, onClick }) => (
   <div className="p-4 mb-4 transition-shadow bg-white border border-gray-200 rounded-lg cursor-pointer hover:shadow-md" onClick={() => onClick(lawyer)}>
@@ -8,7 +8,20 @@ export const LawyerCard = ({ lawyer, onClick }) => (
       </div>
       <div className="flex-1">
         <div className="flex items-start justify-between">
-          <h3 className="text-lg font-semibold">{lawyer.name}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold">{lawyer.name}</h3>
+            {(lawyer?.raw?.credentialsVerified || lawyer?.raw?.status === 'approved' || lawyer?.raw?.verificationStatus === 'verified') ? (
+              <div className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Verified</span>
+              </div>
+            ) : (lawyer?.raw?.status === 'pending' || lawyer?.raw?.verificationStatus === 'pending' || (!lawyer?.raw?.credentialsVerified && lawyer?.raw?.credentials)) ? (
+              <div className="flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium text-amber-700 bg-amber-100 rounded-full">
+                <Clock className="w-3 h-3" />
+                <span>Pending</span>
+              </div>
+            ) : null}
+          </div>
           <div className="flex items-center space-x-1">
 
           </div>

@@ -98,6 +98,7 @@ export const LawyerDirectoryPage = () => {
           experience: lawyer.experience ? (typeof lawyer.experience === 'string' && lawyer.experience.includes('year') ? lawyer.experience : `${lawyer.experience} years`) : 'N/A',
           fee: lawyer.consultationFee ? `₱${lawyer.consultationFee}/hour` : (lawyer.fee || 'N/A'),
           image: `${(lawyer.Fname || lawyer.firstName || lawyer.fname || '').charAt(0) || ''}${(lawyer.Lname || lawyer.lastName || lawyer.lname || '').charAt(0) || ''}`.toUpperCase(),
+          profilePhotoUrl: lawyer.profilePhotoUrl || lawyer.profilePhoto || null,
           about: lawyer.bio || lawyer.about || 'No biography available.',
           education: lawyer.educationInstitution || lawyer.education || 'Not specified',
           areas: lawyer.specialization || lawyer.practiceAreas || [],

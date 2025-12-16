@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { User, LogOut, Settings, ChevronDown, MessageCircle, Bell } from 'lucide-react';
+import { User, LogOut, Settings, ChevronDown, MessageCircle, Bell, LayoutDashboard } from 'lucide-react';
 import { getAuthData, isAuthenticated, logout, fetchUserDetails } from '../utils/auth.jsx';
 import { shouldHideNavigation } from '../utils/navigation.js';
 import NotificationDropdown from './NotificationDropdown';
@@ -271,6 +271,18 @@ const NavigationBar = () => {
                     {/* Dropdown Menu */}
                     {isDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                        {authData?.accountType === 'ADMIN' && (
+                          <button
+                            onClick={() => {
+                              setIsDropdownOpen(false);
+                              navigate('/admin');
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-gray-600" />
+                            <span>Admin Dashboard</span>
+                          </button>
+                        )}
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 transition-colors"
