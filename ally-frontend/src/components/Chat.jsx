@@ -98,7 +98,8 @@ const Chat = ({ currentUserId, receiverId, currentUserRole, currentUserName, rec
             setNewMessage('');
             toast.success('Message sent!');
 
-            // Only redirect if not in compact mode (inline chat)
+            // Only redirect if not in compact mode (inline chat/modal)
+            // When compact=true, we're in a modal and should stay there
             if (!compact) {
                 navigate(`/messages/${chatroomId}`, { replace: true });
             }

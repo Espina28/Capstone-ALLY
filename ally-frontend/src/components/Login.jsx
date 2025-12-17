@@ -12,12 +12,16 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Load saved email on component mount
+  // Load saved email and password on component mount
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedPassword = localStorage.getItem('rememberedPassword');
     if (savedEmail) {
       setEmail(savedEmail);
       setRememberMe(true);
+    }
+    if (savedPassword) {
+      setPassword(savedPassword);
     }
   }, []);
 
@@ -43,38 +47,47 @@ const Login = () => {
       localStorage.setItem('profilePhoto', data.profilePhoto);
       localStorage.setItem('userId', data.id);
       
-      // Save email if "Remember me" is checked
+      // Save email and password if "Remember me" is checked
       if (rememberMe) {
         localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedPassword', password);
       } else {
         localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
       }
       
       console.log('Login successful:', data);
 
       
-      // If user is admin, fetch department information
+      // If user is admin, redirect to admin dashboard
       if (data.accountType === 'ADMIN') {
-        try {
-          const adminResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admins/${data.id}`, {
-            headers: {
-              Authorization: `Bearer ${data.token}`,
-              'Content-Type': 'application/json',
-            },
+        // Try to fetch department information (non-blocking)
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/admins/${data.id}`, {
+          headers: {
+            Authorization: `Bearer ${data.token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(adminResponse => {
+            if (adminResponse.ok) {
+              return adminResponse.json();
+            }
+          })
+          .then(adminData => {
+            if (adminData?.department) {
+              localStorage.setItem('department', adminData.department);
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching admin details:', error);
           });
-          
-          if (adminResponse.ok) {
-            const adminData = await adminResponse.json();
-            localStorage.setItem('department', adminData.department);
-            navigate('/admin', { replace: true });
-            return;
-          }
-        } catch (error) {
-          console.error('Error fetching admin details:', error);
-        }
+        
+        // Always redirect to admin dashboard
+        navigate('/admin', { replace: true });
+        return;
       }
 
-      // For non-admin users or admins without ADMIN department
+      // For non-admin users
       const from = location.state?.from || '/';
       navigate(from, { replace: true });
     } catch (error) {

@@ -16,7 +16,9 @@ const OAuth2RedirectHandler = () => {
       localStorage.setItem('userId', userId);
       console.log(role)
 
-      if (role === 'CLIENT'|| role === 'LAWYER') {
+      if (role === 'ADMIN') {
+        navigate('/admin');
+      } else if (role === 'CLIENT' || role === 'LAWYER') {
         navigate(`/?id=${userId}`);
       }
     } else {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Chat from './Chat';
 import { fetchUserDetails } from '../utils/auth';
+import { lockBodyScroll, unlockBodyScroll } from '../utils/modalScrollLock';
 
 const ChatModal = ({ 
   isOpen, 
@@ -69,12 +70,12 @@ const ChatModal = ({
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // Prevent background scroll
+      lockBodyScroll(); // Prevent background scroll (using counter for nested modals)
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      unlockBodyScroll();
     };
   }, [isOpen]);
 
@@ -173,6 +174,7 @@ const ChatModal = ({
               currentUserRole={currentUserRole}
               currentUserName={currentUserName}
               receiverName={displayReceiverName}
+              compact={true}
             />
           )}
         </div>
