@@ -25,6 +25,10 @@ export const LawyerDirectoryPage = () => {
 
   // Filtering logic moved here
   const filteredLawyers = fetchedLawyers.filter(lawyer => {
+    // Exclude pending lawyers
+    if (lawyer?.raw?.status === 'pending' || lawyer?.raw?.verificationStatus === 'pending') {
+      return false;
+    }
     // Search query
     if (searchQuery && searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
@@ -140,19 +144,50 @@ export const LawyerDirectoryPage = () => {
         <div className="p-4 bg-white shadow-sm sm:p-6 md:p-8 rounded-xl">
           <h1 className="mb-2 text-xl font-bold text-gray-900 sm:mb-3 sm:text-2xl">Find the Right Lawyer for Your Case</h1>
           <p className="mb-6 text-sm text-gray-600 sm:mb-8 sm:text-base">Search our network of verified legal professionals and submit your case to get started with legal assistance</p>
-          <div className="transition-opacity duration-200 ease-in-out">
-            <SearchPanel 
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              filters={filters}
-              setFilters={setFilters}
-              lawyers={paginatedLawyers}
-              onLawyerSelect={handleLawyerSelect}
-              totalLawyers={filteredLawyers.length}
-            />
-          </div>
+          
+          {loading && (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <svg className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-4" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                <p className="text-gray-600">Loading lawyers...</p>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="p-6 mb-6 border border-red-200 rounded-lg bg-red-50">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                </svg>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Error loading lawyers</h3>
+                  <div className="mt-2 text-sm text-red-700">
+                    <p>{error}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="transition-opacity duration-200 ease-in-out">
+              <SearchPanel 
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filters={filters}
+                setFilters={setFilters}
+                lawyers={paginatedLawyers}
+                onLawyerSelect={handleLawyerSelect}
+                totalLawyers={filteredLawyers.length}
+              />
+            </div>
+          )}
           {/* Pagination Controls */}
-          {totalPages > 1 && (
+          {!loading && !error && totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-8">
               <button
                 className="px-3 py-1 text-gray-700 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
