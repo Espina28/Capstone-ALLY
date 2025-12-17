@@ -277,10 +277,6 @@ export const BookingModal = ({
                       <span className="font-medium text-blue-800">Status:</span>
                       <span className="ml-2 text-green-700 font-medium">{caseInfo.status}</span>
                     </div>
-                    <div>
-                      <span className="font-medium text-blue-800">Description:</span>
-                      <p className="mt-1 text-blue-700 text-sm leading-relaxed">{caseInfo.description}</p>
-                    </div>
                   </div>
                 </div>
               )}

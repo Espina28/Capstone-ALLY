@@ -3,8 +3,25 @@ import { Star, MapPin, CheckCircle2, Clock } from 'lucide-react';
 export const LawyerCard = ({ lawyer, onClick }) => (
   <div className="p-4 mb-4 transition-shadow bg-white border border-gray-200 rounded-lg cursor-pointer hover:shadow-md" onClick={() => onClick(lawyer)}>
     <div className="flex items-start space-x-3">
-      <div className="flex items-center justify-center w-12 h-12 font-semibold text-white bg-blue-500 rounded-full">
-        {lawyer.image}
+      <div className="flex items-center justify-center w-12 h-12 font-semibold text-white bg-blue-500 rounded-full overflow-hidden">
+        {lawyer.profilePhotoUrl || lawyer?.raw?.profilePhotoUrl || lawyer?.raw?.profilePhoto ? (
+          <img 
+            src={lawyer.profilePhotoUrl || lawyer.raw?.profilePhotoUrl || lawyer.raw?.profilePhoto} 
+            alt="Profile" 
+            className="object-cover w-full h-full"
+            onError={(e) => {
+              // Fallback to initials if image fails to load
+              e.target.style.display = 'none';
+              const parent = e.target.parentElement;
+              const firstName = lawyer?.name?.split(' ')[0] || '';
+              const lastName = lawyer?.name?.split(' ')[1] || '';
+              parent.textContent = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || lawyer.image || 'L';
+              parent.classList.remove('overflow-hidden');
+            }}
+          />
+        ) : (
+          lawyer.image || 'L'
+        )}
       </div>
       <div className="flex-1">
         <div className="flex items-start justify-between">
