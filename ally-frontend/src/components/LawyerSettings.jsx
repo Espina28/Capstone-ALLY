@@ -650,15 +650,6 @@ const LawyerSettings = ({ user }) => {
           </button>
         </div>
 
-        {/* Debug Information (remove in production) */}
-        <div className="p-4 mt-6 bg-gray-100 rounded">
-          <h3 className="font-semibold text-gray-800">Debug Information:</h3>
-          <p className="text-sm text-gray-600">Practice Area Options: {practiceAreaOptions.length} items</p>
-          <p className="text-sm text-gray-600">Available Options: {practiceAreaOptions.join(', ')}</p>
-          <p className="text-sm text-gray-600">Selected Practice Areas: {practiceAreasChips.join(', ')}</p>
-          <p className="text-sm text-gray-600">Personal Info Practice Areas: {Array.isArray(personalInfo.practiceAreas) ? personalInfo.practiceAreas.join(', ') : personalInfo.practiceAreas}</p>
-        </div>
-
         {/* Footer */}
         <footer className="pt-8 mt-12 border-t border-gray-200">
           <div className="flex items-center justify-center mb-8">
